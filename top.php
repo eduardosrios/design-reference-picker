@@ -808,6 +808,11 @@ pick.addEventListener('click', async () => {
     });
     const data = await readJson(res);
     showToast('Copied to handpicked.');
+    if (index < images.length - 1) {
+      index += 1;
+      resetTop();
+      render();
+    }
   } catch (error) {
     alert(error.message || 'Copy failed.');
   } finally {
