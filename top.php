@@ -40,8 +40,7 @@ function nextCroppedDestination($directory) {
     for ($number = 1; $number < 100000; $number++) {
         $name = sprintf('cutted-%02d.jpg', $number);
         $path = $directory . DIRECTORY_SEPARATOR . $name;
-        $notePath = $directory . DIRECTORY_SEPARATOR . 'NOTE-' . pathinfo($name, PATHINFO_FILENAME) . '.txt';
-        if (!file_exists($path) && !file_exists($notePath)) {
+        if (!file_exists($path)) {
             return [$path, $name];
         }
     }
