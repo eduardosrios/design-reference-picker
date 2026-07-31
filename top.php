@@ -246,7 +246,7 @@ main { min-height: 100vh; padding: 0 0 86px; }
 .scissors-follower.visible { opacity: 1; }
 .scissors-follower-icon { display: block; width: 20px; height: 20px; background: #111; transform: scaleX(-1); -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/542/542578.png') center / contain no-repeat; mask: url('https://cdn-icons-png.flaticon.com/512/542/542578.png') center / contain no-repeat; }
 .empty { padding: 40px 18px; text-align: center; color: var(--muted); }
-.controls, .crop-controls { position: fixed; bottom: 14px; z-index: 30; width: max-content; max-width: calc(100vw - 24px); display: flex; align-items: center; justify-content: center; gap: 18px; padding: 10px 14px; border-radius: 4px; background: rgba(17,17,17,.72); backdrop-filter: blur(10px); }
+.controls, .crop-controls { position: fixed; bottom: 14px; z-index: 30; width: max-content; max-width: calc(100vw - 24px); display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 14px; border-radius: 4px; background: rgba(17,17,17,.72); backdrop-filter: blur(10px); }
 .controls { left: 50%; transform: translateX(-50%); }
 .crop-controls { right: 14px; }
 button { width: auto; min-width: 50px; height: 50px; padding: 0 20px; border: 0; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; font-size: 23px; font-weight: 800; line-height: 1; box-shadow: 0 4px 16px rgba(0,0,0,.22); }
