@@ -8,6 +8,13 @@ Thumbs.db
 top 20/top 5/handpicked/
 top 20/top 5/handpickedBK/
 
+# Local screenshot library; repository keeps five tracked root samples.
+/*.jpg
+/*.jpeg
+/*.png
+/*.webp
+/*.gif
+
 # Editor and local environment files
 .idea/
 .vscode/
