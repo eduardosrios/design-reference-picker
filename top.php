@@ -765,8 +765,8 @@ function render() {
   stage.appendChild(shell);
   title.textContent = src.split('/').pop();
   count.textContent = (index + 1) + ' / ' + images.length;
-  prev.disabled = index === 0;
-  next.disabled = index === images.length - 1;
+  prev.disabled = false;
+  next.disabled = false;
   pick.disabled = false;
   cropToggle.disabled = false;
 }
@@ -779,14 +779,14 @@ cropToggle.addEventListener('click', () => {
 });
 
 prev.addEventListener('click', () => {
-  if (index === 0) { alert('Start of list.'); return; }
+  if (index === 0) { alert('You are at the beginning of the list.'); return; }
   index -= 1;
   resetTop();
   render();
 });
 
 next.addEventListener('click', () => {
-  if (index === images.length - 1) { alert('End of list.'); return; }
+  if (index === images.length - 1) { alert('You are at the end of the list.'); return; }
   index += 1;
   resetTop();
   render();
