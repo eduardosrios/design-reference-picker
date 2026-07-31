@@ -1,0 +1,32 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax-and-scope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: gd
+      - name: Validate PHP
+        run: find . -name "*.php" -not -path "./.git/*" -print0 | xargs -0 -n1 php -l
+      - name: Validate embedded JavaScript
+        run: |
+          php -r '$s=file_get_contents("top.php"); preg_match("#<script>(.*)</script>#s", $s, $m); file_put_contents("/tmp/picker.js", $m[1] ?? "");'
+          node --check /tmp/picker.js
+      - name: Guard repository scope
+        shell: bash
+        run: |
+          test -f top.php
+          test -f README.md
+          test ! -e AGENTS.md
+          test ! -e template
