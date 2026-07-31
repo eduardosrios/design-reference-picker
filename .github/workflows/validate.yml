@@ -21,7 +21,7 @@ jobs:
         run: find . -name "*.php" -not -path "./.git/*" -print0 | xargs -0 -n1 php -l
       - name: Validate embedded JavaScript
         run: |
-          php -r '$s=file_get_contents("top.php"); preg_match("#<script>(.*)</script>#s", $s, $m); file_put_contents("/tmp/picker.js", $m[1] ?? "");'
+          php -r '$_SERVER["REQUEST_METHOD"]="GET"; ob_start(); include "top.php"; $s=ob_get_clean(); preg_match("#<script>(.*)</script>#s", $s, $m); file_put_contents("/tmp/picker.js", $m[1] ?? "");'
           node --check /tmp/picker.js
       - name: Guard repository scope
         shell: bash
