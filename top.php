@@ -256,6 +256,7 @@ button { width: auto; min-width: 50px; height: 50px; padding: 0 20px; border: 0;
 .nav-icon.prev-icon { transform: rotate(180deg); }
 .ok { color: #fff; background: var(--ok); font-size: 16px; font-weight: 600; letter-spacing: 0; }
 .button-icon { width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; filter: invert(1); pointer-events: none; }
+.ok .button-icon { width: 24px; height: 24px; flex: 0 0 24px; }
 .crop-toggle { width: auto; min-width: 42px; height: 42px; color: #fff; background: var(--crop); border-radius: 4px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
 .crop-toggle.active { background: var(--crop); outline: 3px solid rgba(var(--crop-rgb), .22); }
 button:disabled { opacity: .45; cursor: default; }
@@ -794,9 +795,13 @@ next.addEventListener('click', () => {
 
 pick.addEventListener('click', async () => {
   if (!images.length) return;
-  resetTop();
   pick.disabled = true;
   try {
+    if (cropMode && cropSelection) {
+      await saveCrop();
+      return;
+    }
+    resetTop();
     const res = await fetch(location.href, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
