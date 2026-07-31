@@ -1,0 +1,16 @@
+# Local runtime output
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Keep curated fixtures already tracked, but ignore new runtime selections by default.
+top 20/top 5/handpicked/cutted-*.jpg
+top 20/top 5/handpicked/NOTE-cutted-*.txt
+
+# Editor and local environment files
+.idea/
+.vscode/
+.env
+.env.*
+!.env.example
