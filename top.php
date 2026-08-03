@@ -231,7 +231,7 @@ header { position: sticky; top: 0; z-index: 20; display: none; align-items: cent
 .count { color: var(--muted); font-size: 13px; }
 .crop-controls .count { min-width: 54px; color: #fff; text-align: center; }
 main { min-height: 100vh; padding: 0 0 86px; }
-.stage { width: 100%; display: flex; justify-content: center; padding-bottom: 120px; background: #fff; }
+.stage { width: 100%; display: flex; justify-content: center; padding-bottom: 5px; background: #fff; }
 .image-shell { position: relative; width: 100%; cursor: none; }
 .image-shell.crop-has-selection { cursor: not-allowed; }
 .stage img { width: 100%; height: auto; display: block; background: #fff; box-shadow: 0 1px 12px rgba(0,0,0,.12); -webkit-user-drag: none; user-select: none; }
@@ -249,7 +249,7 @@ main { min-height: 100vh; padding: 0 0 86px; }
 .controls, .crop-controls { position: fixed; bottom: 14px; z-index: 30; width: max-content; max-width: calc(100vw - 24px); display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 14px; border-radius: 4px; background: rgba(17,17,17,.72); backdrop-filter: blur(10px); }
 .controls { left: 50%; transform: translateX(-50%); }
 .crop-controls { right: 14px; }
-.foot-toggle { position: fixed; right: 14px; bottom: 90px; z-index: 30; min-width: 72px; height: 42px; color: #111; background: #fff; font-size: 16px; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
+.foot-toggle { position: fixed; right: 14px; bottom: 90px; z-index: 30; min-width: 72px; height: 42px; gap: 11px; color: #111; background: #fff; font-size: 16px; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
 .foot-toggle.active { color: #fff; background: var(--ok); outline: 3px solid rgba(var(--ok-rgb), .22); }
 .foot-toggle-icon { width: 18px; height: 18px; flex: 0 0 18px; object-fit: contain; pointer-events: none; transform: rotate(-90deg); }
 .foot-toggle.active .foot-toggle-icon { filter: invert(1); transform: rotate(90deg); }
