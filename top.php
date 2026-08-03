@@ -231,7 +231,7 @@ header { position: sticky; top: 0; z-index: 20; display: none; align-items: cent
 .count { color: var(--muted); font-size: 13px; }
 .crop-controls .count { min-width: 54px; color: #fff; text-align: center; }
 main { min-height: 100vh; padding: 0 0 86px; }
-.stage { width: 100%; display: flex; justify-content: center; }
+.stage { width: 100%; display: flex; justify-content: center; padding-bottom: 120px; background: #fff; }
 .image-shell { position: relative; width: 100%; cursor: none; }
 .image-shell.crop-has-selection { cursor: not-allowed; }
 .stage img { width: 100%; height: auto; display: block; background: #fff; box-shadow: 0 1px 12px rgba(0,0,0,.12); -webkit-user-drag: none; user-select: none; }
@@ -249,6 +249,10 @@ main { min-height: 100vh; padding: 0 0 86px; }
 .controls, .crop-controls { position: fixed; bottom: 14px; z-index: 30; width: max-content; max-width: calc(100vw - 24px); display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 14px; border-radius: 4px; background: rgba(17,17,17,.72); backdrop-filter: blur(10px); }
 .controls { left: 50%; transform: translateX(-50%); }
 .crop-controls { right: 14px; }
+.foot-toggle { position: fixed; right: 14px; bottom: 90px; z-index: 30; min-width: 72px; height: 42px; color: #111; background: #fff; font-size: 16px; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
+.foot-toggle.active { color: #fff; background: var(--ok); outline: 3px solid rgba(var(--ok-rgb), .22); }
+.foot-toggle-icon { width: 18px; height: 18px; flex: 0 0 18px; object-fit: contain; pointer-events: none; transform: rotate(-90deg); }
+.foot-toggle.active .foot-toggle-icon { filter: invert(1); transform: rotate(90deg); }
 button { width: auto; min-width: 50px; height: 50px; padding: 0 20px; border: 0; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; font-size: 23px; font-weight: 800; line-height: 1; box-shadow: 0 4px 16px rgba(0,0,0,.22); }
 .nav { color: #111; background: #fff; }
 .nav-icon { width: 18px; height: 18px; flex: 0 0 18px; object-fit: contain; pointer-events: none; }
@@ -282,7 +286,7 @@ button:disabled { opacity: .45; cursor: default; }
 .toast { position: fixed; left: 50%; bottom: 82px; transform: translateX(-50%); z-index: 40; max-width: min(92vw, 560px); padding: 10px 14px; border-radius: 8px; color: #fff; background: rgba(17,17,17,.88); font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .18s ease; }
 .toast.show { opacity: 1; }
 @media (pointer: coarse) { .scissors-follower { display: none; } }
-@media (max-width: 700px) { main { padding-bottom: 170px; } .crop-controls { bottom: 98px; } }
+@media (max-width: 700px) { main { padding-bottom: 170px; } .crop-controls { bottom: 98px; } .foot-toggle { bottom: 174px; } }
 @media (min-width: 1180px) { .image-shell { max-width: 1180px; } }
 </style>
 </head>
@@ -298,6 +302,7 @@ button:disabled { opacity: .45; cursor: default; }
   <button class="ok" id="pick" type="button" aria-label="Copy current image to handpicked"><img class="button-icon" src="https://cdn-icons-png.flaticon.com/512/15219/15219750.png" alt="" aria-hidden="true">APPROVE</button>
   <button class="nav" id="next" type="button" aria-label="Next"><img class="nav-icon" src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt="" aria-hidden="true"></button>
 </div>
+<button class="foot-toggle" id="footToggle" type="button" aria-label="Start every image at its footer" aria-pressed="false"><img class="foot-toggle-icon" src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt="" aria-hidden="true"><span id="footToggleLabel">HEAD</span></button>
 <div class="crop-controls">
   <div class="count" id="count"></div>
   <button class="crop-toggle" id="cropToggle" type="button" aria-label="Enable crop selection" aria-pressed="false"><img class="button-icon" id="cropToggleIcon" src="https://cdn-icons-png.flaticon.com/512/542/542578.png" alt="" aria-hidden="true"><span id="cropToggleLabel">CUT</span></button>
@@ -316,10 +321,13 @@ const prev = document.getElementById('prev');
 const next = document.getElementById('next');
 const pick = document.getElementById('pick');
 const cropToggle = document.getElementById('cropToggle');
+const footToggle = document.getElementById('footToggle');
+const footToggleLabel = document.getElementById('footToggleLabel');
 const scissorsFollower = document.getElementById('scissorsFollower');
 const toast = document.getElementById('toast');
 let toastTimer = null;
 let cropMode = false;
+let footMode = false;
 let cropPoints = [];
 let cropSelection = null;
 let cropDrag = null;
@@ -739,6 +747,7 @@ function render() {
     next.disabled = true;
     pick.disabled = true;
     cropToggle.disabled = true;
+    footToggle.disabled = true;
     return;
   }
   const src = images[index];
@@ -769,9 +778,38 @@ function render() {
   next.disabled = false;
   pick.disabled = false;
   cropToggle.disabled = false;
+  footToggle.disabled = false;
+  queueImagePosition(img);
 }
 
 function resetTop() { window.scrollTo({ top: 0, behavior: 'instant' }); }
+
+function scrollToPageEnd(img) {
+  if (!footMode || !img || !img.isConnected) return;
+  const scrollRoot = document.scrollingElement || document.documentElement;
+  window.scrollTo({ top: scrollRoot.scrollHeight, behavior: 'instant' });
+}
+
+function queueImagePosition(img) {
+  if (!footMode) {
+    resetTop();
+    return;
+  }
+  const positionAtPageEnd = () => requestAnimationFrame(() => {
+    requestAnimationFrame(() => scrollToPageEnd(img));
+  });
+  if (img && img.complete && img.naturalHeight) positionAtPageEnd();
+  else if (img) img.addEventListener('load', positionAtPageEnd, { once: true });
+}
+
+footToggle.addEventListener('click', () => {
+  footMode = !footMode;
+  footToggle.classList.toggle('active', footMode);
+  footToggleLabel.textContent = footMode ? 'FOOT' : 'HEAD';
+  footToggle.setAttribute('aria-pressed', footMode ? 'true' : 'false');
+  footToggle.setAttribute('aria-label', footMode ? 'Stop starting images at their footer' : 'Start every image at its footer');
+  queueImagePosition(currentParts().img);
+});
 
 cropToggle.addEventListener('click', () => {
   const enable = !cropMode;
@@ -781,14 +819,12 @@ cropToggle.addEventListener('click', () => {
 prev.addEventListener('click', () => {
   if (index === 0) { alert('You are at the beginning of the list.'); return; }
   index -= 1;
-  resetTop();
   render();
 });
 
 next.addEventListener('click', () => {
   if (index === images.length - 1) { alert('You are at the end of the list.'); return; }
   index += 1;
-  resetTop();
   render();
 });
 
@@ -800,7 +836,7 @@ pick.addEventListener('click', async () => {
       await saveCrop();
       return;
     }
-    resetTop();
+    if (!footMode) resetTop();
     const res = await fetch(location.href, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -810,7 +846,6 @@ pick.addEventListener('click', async () => {
     showToast('Copied to handpicked.');
     if (index < images.length - 1) {
       index += 1;
-      resetTop();
       render();
     }
   } catch (error) {
